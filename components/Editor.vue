@@ -103,10 +103,19 @@ const updateEditorLanguage = (selectedLang: string) => {
   }
 }
 
-const createPaste = () => {
+const createPaste = async () => {
   if (!editorInstance.value) return
   const paste = monaco.editor.getModel(editorInstance.value.uri)?.getValue()
-  console.log(paste)
+  const response = await $fetch('/api/paste', {
+    method: 'POST',
+    body: {
+      title: '',
+      content: paste,
+      language: currentLanguageId.value,
+      theme: currentThemeId.value,
+    },
+  })
+  console.log(response)
 }
 
 const currentTheme = ref('GitHub Light')
