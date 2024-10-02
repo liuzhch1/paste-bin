@@ -20,7 +20,11 @@
         :model-value="currentTheme"
         @update:model-value="updateEditorTheme"
       />
-      <UButton color="white" @click="createPaste" class="create-button"
+      <UButton
+        color="white"
+        @click="createPaste"
+        class="create-button"
+        :disabled="!editorContent"
         >Create</UButton
       >
     </div>
@@ -55,7 +59,7 @@ const editorInstance = ref<monaco.editor.ITextModel | null>(null)
 
 const currentLanguage = ref('Plain Text')
 const currentLanguageId = ref('plaintext')
-
+const editorContent = ref('')
 onMounted(async () => {
   // Likely use of <ClientOnly> delays the render of content,
   // so wait for the next DOM update cycle
@@ -81,6 +85,14 @@ onMounted(async () => {
         lineNumbersMinChars: 3,
       })
       .getModel()
+    editorInstance.value?.onDidChangeContent(() => {
+      if (!editorInstance.value) {
+        editorContent.value = ''
+      } else {
+        editorContent.value =
+          monaco.editor.getModel(editorInstance.value.uri)?.getValue() || ''
+      }
+    })
   } else {
     console.error('Monaco editor container not found')
   }
@@ -106,7 +118,7 @@ const updateEditorLanguage = (selectedLang: string) => {
 const createPaste = async () => {
   if (!editorInstance.value) return
   const paste = monaco.editor.getModel(editorInstance.value.uri)?.getValue()
-  const response = await $fetch('/api/paste', {
+  const response = await $fetch('/api/pastes', {
     method: 'POST',
     body: {
       title: '',
@@ -115,7 +127,7 @@ const createPaste = async () => {
       theme: currentThemeId.value,
     },
   })
-  console.log(response)
+  navigateTo(`/pastes/${response.id}`)
 }
 
 const currentTheme = ref('GitHub Light')

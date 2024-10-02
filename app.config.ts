@@ -11,5 +11,10 @@ export default defineAppConfig({
         color: 'white',
       },
     },
+    notification: {
+      progress: {
+        base: 'bg-white dark:bg-gray-900',
+      },
+    },
   },
 })
