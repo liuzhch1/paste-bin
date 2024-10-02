@@ -1,0 +1,13 @@
+{
+  "Plain Text": "plaintext",
+  "Typescript": "typescript",
+  "Javascript": "javascript",
+  "Python": "python",
+  "Vue": "vue",
+  "JSON": "json",
+  "CSS": "css",
+  "HTML": "html",
+  "Markdown": "markdown",
+  "YAML": "yaml",
+  "Rust": "rust"
+}
