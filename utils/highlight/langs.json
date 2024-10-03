@@ -9,5 +9,8 @@
   "HTML": "html",
   "Markdown": "markdown",
   "YAML": "yaml",
-  "Rust": "rust"
+  "Rust": "rust",
+  "Shell": "shell",
+  "Bash": "bash",
+  "Dockerfile": "dockerfile"
 }

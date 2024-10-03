@@ -1,15 +1,23 @@
 <template>
   <div>
-    <NuxtLink :to="`/pastes/${paste.id}`" class="text-gray-700 hover:underline">
-      <h1>{{ paste.title === '' ? 'Untitled' : paste.title }}</h1>
-    </NuxtLink>
+    <div class="title-container">
+      <NuxtLink
+        :to="`/pastes/${paste.id}`"
+        class="text-gray-700 hover:underline"
+      >
+        <h1>{{ paste.title === '' ? 'Untitled' : paste.title }}</h1>
+      </NuxtLink>
+      <button @click="copyToClipboard">
+        <Icon name="mdi:content-copy" class="size-4" />
+      </button>
+    </div>
     <div
       class="flex justify-between items-center"
       style="padding-bottom: 0.3rem"
     >
       <p class="text-sm text-gray-500">{{ formattedDate }}</p>
-      <button @click="copyToClipboard">
-        <Icon name="mdi:content-copy" />
+      <button @click="deletePaste" class="flex items-center">
+        <Icon name="mdi:delete" class="size-4" />
       </button>
     </div>
     <ClientOnly>
@@ -65,9 +73,7 @@ onMounted(async () => {
   initMonaco()
   if (editorContainer.value) {
     const editor = monaco.editor.create(editorContainer.value, {
-      value: props.maxLines
-        ? props.paste.content.split('\n').slice(0, props.maxLines).join('\n')
-        : props.paste.content,
+      value: displayedContent.value,
       language: props.paste.language,
       readOnly: true,
       scrollbar: {
@@ -121,6 +127,20 @@ const copyToClipboard = () => {
     },
   })
 }
+
+const deletePaste = async () => {
+  await $fetch('/api/pastes/' + props.paste.id, {
+    method: 'DELETE',
+  })
+  navigateTo('/pastes')
+  useToast().add({
+    title: `Paste ${props.paste.title} deleted`,
+    timeout: 1000,
+    closeButton: {
+      icon: '',
+    },
+  })
+}
 </script>
 
 <style scoped>
@@ -136,6 +156,23 @@ pre {
   border-radius: 5px;
   font-size: 14px;
   line-height: 1.4;
+}
+
+.title-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.6em;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button .icon {
+  display: block;
 }
 </style>
 

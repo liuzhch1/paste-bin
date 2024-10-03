@@ -4,6 +4,8 @@
       v-model="pasteTitle"
       placeholder="Optional title"
       class="w-full lg:w-60 control-item"
+      :style="{ fontSize: '15px' }"
+      @update:model-value="updatePasteTitle"
     />
     <div id="monaco-editor-container"></div>
     <div class="editor-controls">
@@ -40,14 +42,25 @@
 import * as monaco from 'monaco-editor'
 import { bundledThemesInfo } from 'shiki'
 import { ref, onMounted, nextTick } from 'vue'
-import { initMonaco, langNames, langs, themesNames } from '~/utils/highlight'
+import {
+  initMonaco,
+  langNames,
+  langNameOf,
+  themesNames,
+  langIdOf,
+  themeNameOf,
+  themeIdOf,
+} from '~/utils/highlight'
 
 const editorInstance = ref<monaco.editor.ITextModel | null>(null)
 
-const currentLanguage = ref('Plain Text')
-const currentLanguageId = ref('plaintext')
-const editorContent = ref('')
-const pasteTitle = ref('')
+const currentLanguageId = ref(draftPaste.lang || 'plaintext')
+const currentLanguage = ref(langNameOf(currentLanguageId.value) || 'Plain Text')
+const currentThemeId = ref(draftPaste.theme || 'github-light')
+const currentTheme = ref(themeNameOf(currentThemeId.value) || 'GitHub Light')
+console.log(currentThemeId.value, currentTheme.value)
+const editorContent = ref(draftPaste.content || '')
+const pasteTitle = ref(draftPaste.title || '')
 
 onMounted(async () => {
   // Likely use of <ClientOnly> delays the render of content,
@@ -58,8 +71,8 @@ onMounted(async () => {
   if (container) {
     editorInstance.value = monaco.editor
       .create(container, {
-        value: '',
-        language: 'plaintext',
+        value: editorContent.value,
+        language: currentLanguageId.value,
         minimap: {
           enabled: false,
         },
@@ -68,12 +81,13 @@ onMounted(async () => {
         wrappingIndent: 'same',
         scrollBeyondLastLine: false,
         automaticLayout: true,
-        fontSize: 13,
+        fontSize: 14,
         fontFamily: 'Roboto Mono',
         fontWeight: 'normal',
         lineNumbersMinChars: 3,
       })
       .getModel()
+    updateEditorTheme(themeNameOf(draftPaste.theme) || 'GitHub Light')
     editorInstance.value?.onDidChangeContent(() => {
       if (!editorInstance.value) {
         editorContent.value = ''
@@ -82,14 +96,24 @@ onMounted(async () => {
           monaco.editor.getModel(editorInstance.value.uri)?.getValue() || ''
       }
     })
+    editorInstance.value?.onDidChangeLanguage((e) => {
+      draftPaste.lang = e.newLanguage
+    })
+    editorInstance.value?.onDidChangeContent(() => {
+      draftPaste.content = editorContent.value
+    })
   } else {
     console.error('Monaco editor container not found')
   }
 })
 
+const updatePasteTitle = (title: string) => {
+  draftPaste.title = title
+}
+
 const updateEditorLanguage = (selectedLang: string) => {
   if (editorInstance.value) {
-    const languageId = langs[selectedLang as keyof typeof langs]
+    const languageId = langIdOf(selectedLang)
     if (languageId) {
       currentLanguage.value = selectedLang
       currentLanguageId.value = languageId
@@ -116,22 +140,20 @@ const createPaste = async () => {
       theme: currentThemeId.value,
     },
   })
+  draftPaste.clear()
   navigateTo(`/pastes/${response.id}`)
 }
 
-const currentTheme = ref('GitHub Light')
-const currentThemeId = ref('github-light')
 const updateEditorTheme = (selectedTheme: string) => {
   currentTheme.value = selectedTheme
-  const targetThemeId = bundledThemesInfo.find(
-    (theme) => theme.displayName === selectedTheme,
-  )?.id
+  const targetThemeId = themeIdOf(selectedTheme)
   if (!targetThemeId) {
     console.error(`Theme not found ${selectedTheme}`)
     return
   }
   currentThemeId.value = targetThemeId
   monaco.editor.setTheme(targetThemeId)
+  draftPaste.theme = targetThemeId
 }
 </script>
 

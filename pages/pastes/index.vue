@@ -5,7 +5,7 @@
       <Paste
         :paste="paste"
         :max-lines="10"
-        class="mb-4 p-4 border rounded-md"
+        class="mb-4 p-3 border rounded-md"
       />
     </div>
   </div>
