@@ -134,8 +134,10 @@ const deletePaste = async () => {
   })
   navigateTo('/pastes')
   useToast().add({
-    title: `Paste ${props.paste.title} deleted`,
-    timeout: 1000,
+    title: `Paste "${props.paste.title.slice(0, 26)}${
+      props.paste.title.length > 26 ? '...' : ''
+    }" deleted`,
+    timeout: 5000,
     closeButton: {
       icon: '',
     },
