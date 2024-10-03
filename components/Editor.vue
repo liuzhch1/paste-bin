@@ -1,5 +1,10 @@
 <template>
   <ClientOnly>
+    <UInput
+      v-model="pasteTitle"
+      placeholder="Optional title"
+      class="w-full lg:w-60 control-item"
+    />
     <div id="monaco-editor-container"></div>
     <div class="editor-controls">
       <USelectMenu
@@ -32,39 +37,23 @@
 </template>
 
 <script setup lang="ts">
-import { shikiToMonaco } from '@shikijs/monaco'
 import * as monaco from 'monaco-editor'
-import { bundledThemesInfo, createHighlighter } from 'shiki'
+import { bundledThemesInfo } from 'shiki'
 import { ref, onMounted, nextTick } from 'vue'
-
-const { default: langs } = await import('@/components/langs.json')
-const langNames = Object.keys(langs)
-const { default: themes } = await import('@/components/themes.json')
-const themesNames = themes
-  .map((theme) => bundledThemesInfo.find((t) => t.id === theme)?.displayName)
-  .filter((theme) => !!theme) as string[]
-
-// Register the languageIds first. Only registered languages will be highlighted.
-Object.values(langs).forEach((lang) => {
-  monaco.languages.register({ id: lang })
-})
-
-const highlighter = await createHighlighter({
-  themes,
-  langs: Object.values(langs),
-})
-shikiToMonaco(highlighter, monaco)
+import { initMonaco, langNames, langs, themesNames } from '~/utils/highlight'
 
 const editorInstance = ref<monaco.editor.ITextModel | null>(null)
 
 const currentLanguage = ref('Plain Text')
 const currentLanguageId = ref('plaintext')
 const editorContent = ref('')
+const pasteTitle = ref('')
+
 onMounted(async () => {
   // Likely use of <ClientOnly> delays the render of content,
   // so wait for the next DOM update cycle
   await nextTick()
-
+  initMonaco()
   const container = document.getElementById('monaco-editor-container')
   if (container) {
     editorInstance.value = monaco.editor
@@ -121,7 +110,7 @@ const createPaste = async () => {
   const response = await $fetch('/api/pastes', {
     method: 'POST',
     body: {
-      title: '',
+      title: pasteTitle.value,
       content: paste,
       language: currentLanguageId.value,
       theme: currentThemeId.value,
@@ -148,12 +137,8 @@ const updateEditorTheme = (selectedTheme: string) => {
 
 <style scoped>
 #monaco-editor-container {
-  width: 100%;
   min-height: 432px;
-  border: 1px solid #0000002c;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 

@@ -1,0 +1,5 @@
+#monaco-editor-container {
+  border: 1px solid #0000002c;
+  border-radius: 6px;
+  overflow: hidden;
+}

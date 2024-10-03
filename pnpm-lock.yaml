@@ -26,6 +26,9 @@ importers:
       shiki:
         specifier: ^1.21.0
         version: 1.21.0
+      tailwindcss:
+        specifier: ^3.4.13
+        version: 3.4.13
       vue:
         specifier: latest
         version: 3.5.10

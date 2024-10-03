@@ -5,11 +5,9 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .container {
   margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #e0e0e072;
   border-radius: 4px;
   font-family: Arial, sans-serif;
 }

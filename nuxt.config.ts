@@ -13,6 +13,9 @@ export default defineNuxtConfig({
       ],
     },
   },
+  ui: {
+    global: true,
+  },
   vite: {
     resolve: {
       alias: {
@@ -20,5 +23,6 @@ export default defineNuxtConfig({
       },
     },
   },
+  css: ['@/assets/css/main.css'],
   modules: ['@nuxt/ui'],
 })

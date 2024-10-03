@@ -61,7 +61,7 @@ header {
   display: flex;
   padding: 1em;
   padding-bottom: 0.9em;
-  border-bottom: 1px dashed var(--color-gray-20);
+  border-bottom: 1px dashed rgba(128, 128, 128, 0.49);
 }
 
 nav a {
