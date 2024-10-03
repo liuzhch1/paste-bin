@@ -22,7 +22,7 @@
     </div>
     <ClientOnly>
       <div id="monaco-editor-container">
-        <div ref="editorContainer" style="width: 100%; height: 200px"></div>
+        <div ref="editorContainer"></div>
       </div>
     </ClientOnly>
     <p v-if="isContentTruncated" class="text-sm text-gray-500 mt-2">
