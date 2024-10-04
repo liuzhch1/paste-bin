@@ -41,22 +41,24 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
 import { ref, onMounted, nextTick } from 'vue'
-import {
-  initMonaco,
-  langNames,
-  langNameOf,
-  themesNames,
-  langIdOf,
-  themeNameOf,
-  themeIdOf,
-} from '~/utils/highlight'
+const colorMode = useColorMode()
 
 const editorInstance = ref<monaco.editor.ITextModel | null>(null)
 
 const currentLanguageId = ref(draftPaste.lang || 'plaintext')
 const currentLanguage = ref(langNameOf(currentLanguageId.value) || 'Plain Text')
-const currentThemeId = ref(draftPaste.theme || 'github-light')
-const currentTheme = ref(themeNameOf(currentThemeId.value) || 'GitHub Light')
+
+const currentThemeId = ref(
+  draftPaste.theme ||
+    (colorMode.value === 'dark' ? defaultDarkTheme.id : defaultLightTheme.id),
+)
+const currentTheme = ref(
+  themeNameOf(currentThemeId.value) ||
+    (colorMode.value === 'dark'
+      ? defaultDarkTheme.name
+      : defaultLightTheme.name),
+)
+console.log(currentTheme)
 console.log(currentThemeId.value, currentTheme.value)
 const editorContent = ref(draftPaste.content || '')
 const pasteTitle = ref(draftPaste.title || '')
@@ -84,9 +86,9 @@ onMounted(async () => {
         fontFamily: 'Roboto Mono',
         fontWeight: 'normal',
         lineNumbersMinChars: 3,
+        theme: currentThemeId.value,
       })
       .getModel()
-    updateEditorTheme(themeNameOf(draftPaste.theme) || 'GitHub Light')
     editorInstance.value?.onDidChangeContent(() => {
       if (!editorInstance.value) {
         editorContent.value = ''
@@ -143,17 +145,34 @@ const createPaste = async () => {
   navigateTo(`/pastes/${response.id}`)
 }
 
-const updateEditorTheme = (selectedTheme: string) => {
+// Update the updateEditorTheme function to consider the color mode
+const updateEditorTheme = (selectedTheme: string, auto: boolean = false) => {
   currentTheme.value = selectedTheme
-  const targetThemeId = themeIdOf(selectedTheme)
+  let targetThemeId = themeIdOf(selectedTheme)
+
   if (!targetThemeId) {
     console.error(`Theme not found ${selectedTheme}`)
     return
   }
   currentThemeId.value = targetThemeId
   monaco.editor.setTheme(targetThemeId)
-  draftPaste.theme = targetThemeId
+
+  // If the theme change due to color mode change, don't save it
+  if (!auto) {
+    draftPaste.theme = targetThemeId
+  }
 }
+
+watch(colorMode, (newColorMode) => {
+  if (draftPaste.theme) {
+    return
+  }
+  if (colorMode.value) {
+    const newTheme =
+      newColorMode.value === 'dark' ? 'GitHub Dark' : 'GitHub Light'
+    updateEditorTheme(newTheme, true)
+  }
+})
 </script>
 
 <style scoped>

@@ -39,3 +39,12 @@ export const initMonaco = async () => {
   shikiToMonaco(highlighter, monaco)
   console.log('Monaco initialized')
 }
+
+export const defaultLightTheme = {
+  id: 'github-light',
+  name: 'GitHub Light',
+}
+export const defaultDarkTheme = {
+  id: 'github-dark',
+  name: 'GitHub Dark',
+}
