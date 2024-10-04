@@ -80,11 +80,11 @@ const groups = computed(() => [
         return []
       }
 
-      const { pastes } = await $fetch('/api/pastes', { params: { q } })
+      const pastes = await $fetch('/api/search', { params: { q } })
       return pastes.map((paste) => ({
-        id: paste.id,
-        label: paste.title || 'Untitled',
-        suffix: paste.content.slice(0, 100),
+        id: paste.item.id,
+        label: paste.item.title || 'Untitled',
+        suffix: paste.item.content.slice(0, 100),
       }))
     },
   },

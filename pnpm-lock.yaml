@@ -17,6 +17,9 @@ importers:
       '@shikijs/monaco':
         specifier: ^1.21.0
         version: 1.21.0
+      fuse.js:
+        specifier: ^7.0.0
+        version: 7.0.0
       monaco-editor:
         specifier: ^0.52.0
         version: 0.52.0
