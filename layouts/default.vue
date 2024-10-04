@@ -23,7 +23,7 @@
           <UButton
             icon="i-lucide:search"
             size="sm"
-            variant="soft"
+            variant="ghost"
             @click="isOpen = true"
           />
         </UTooltip>

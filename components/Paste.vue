@@ -1,16 +1,13 @@
 <template>
   <div>
     <div class="title-container">
-      <NuxtLink
-        :to="`/pastes/${paste.id}`"
-        class="text-gray-700 hover:underline"
-      >
+      <NuxtLink :to="`/pastes/${paste.id}`" class="hover:underline">
         <h1>{{ paste.title === '' ? 'Untitled' : paste.title }}</h1>
       </NuxtLink>
       <UButton
         icon="i-lucide:clipboard-copy"
         size="xs"
-        variant="soft"
+        variant="ghost"
         @click="copyToClipboard"
       />
     </div>
@@ -22,7 +19,7 @@
       <UButton
         icon="i-lucide:trash-2"
         size="xs"
-        variant="soft"
+        variant="ghost"
         @click="deletePaste"
       />
     </div>
@@ -112,6 +109,16 @@ onMounted(async () => {
     // Set theme if current url isn't /pastes
     if (window.location.pathname !== '/pastes') {
       monaco.editor.setTheme(props.paste.theme)
+    } else {
+      const colorMode = useColorMode()
+      monaco.editor.setTheme(
+        colorMode.value === 'dark' ? defaultDarkTheme.id : defaultLightTheme.id,
+      )
+      watch(colorMode, (newMode) => {
+        monaco.editor.setTheme(
+          newMode.value === 'dark' ? defaultDarkTheme.id : defaultLightTheme.id,
+        )
+      })
     }
   }
 })
@@ -156,14 +163,6 @@ h1 {
   font-size: 1.2rem;
   margin-top: 0;
   margin-bottom: 0rem;
-}
-
-pre {
-  background-color: #f5f5f5;
-  padding: 16px;
-  border-radius: 5px;
-  font-size: 14px;
-  line-height: 1.4;
 }
 
 .title-container {
