@@ -15,49 +15,91 @@
             </a>
           </nav>
         </div>
-        <div class="search-box">
-          <UInput
-            v-model="searchQuery"
-            placeholder="Search pastes..."
-            icon="i-heroicons-magnifying-glass-20-solid"
-            size="xs"
-            style="font-size: 15px"
-            :trailing="false"
-            @keyup.enter="performSearch"
-            class="search-input"
+        <UTooltip
+          text="Search pastes"
+          :shortcuts="[metaSymbol, 'K']"
+          :popper="{ strategy: 'absolute' }"
+        >
+          <UButton
+            icon="i-lucide:search"
+            size="sm"
+            variant="soft"
+            @click="isOpen = true"
           />
-        </div>
+        </UTooltip>
       </div>
     </header>
     <main>
       <slot />
     </main>
+    <UModal v-model="isOpen">
+      <UCommandPalette
+        placeholder="Search pastes..."
+        :groups="groups"
+        :empty-state="{
+          icon: 'i-heroicons-magnifying-glass-20-solid',
+          label: 'Type to search...',
+          queryLabel: 'No pastes match your search. Please try again.',
+        }"
+        @update:model-value="onSelect"
+      />
+    </UModal>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRouter } from 'nuxt/app'
+const { metaSymbol } = useShortcuts()
 
-export default defineComponent({
-  data() {
-    return {
-      links: [
-        { path: '/', text: 'New' },
-        { path: '/pastes', text: 'Pastes' },
-        { path: '/about', text: 'About' },
-      ],
-      searchQuery: '',
-    }
+const router = useRouter()
+
+const links = [
+  { path: '/', text: 'New' },
+  { path: '/pastes', text: 'Pastes' },
+  { path: '/about', text: 'About' },
+]
+
+const isOpen = ref(false)
+
+const isCurrentPage = (path: string): 'page' | undefined => {
+  return router.currentRoute.value.path === path ? 'page' : undefined
+}
+
+const groups = computed(() => [
+  {
+    key: 'search',
+    label: 'Search',
+    commands: [],
   },
-  methods: {
-    isCurrentPage(path: string): 'page' | undefined {
-      return this.$route.path === path ? 'page' : undefined
+  {
+    key: 'pastes',
+    label: (q: string) => q && `Pastes matching “${q}”...`,
+    search: async (q: string) => {
+      if (!q) {
+        return []
+      }
+
+      const { pastes } = await $fetch('/api/pastes', { params: { q } })
+      return pastes.map((paste) => ({
+        id: paste.id,
+        label: paste.title || 'Untitled',
+        suffix: paste.content.slice(0, 100),
+      }))
     },
-    performSearch() {
-      // Implement search functionality here
-      console.log('Searching for:', this.searchQuery)
-      // You might want to navigate to a search results page or update the current page
-      // this.$router.push({ path: '/search', query: { q: this.searchQuery } })
+  },
+])
+
+const onSelect = (option: { id: string }) => {
+  isOpen.value = false
+  router.push(`/pastes/${option.id}`)
+}
+
+defineShortcuts({
+  meta_k: {
+    usingInput: true,
+    handler: () => {
+      isOpen.value = !isOpen.value
     },
   },
 })

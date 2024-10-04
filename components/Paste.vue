@@ -7,18 +7,24 @@
       >
         <h1>{{ paste.title === '' ? 'Untitled' : paste.title }}</h1>
       </NuxtLink>
-      <button @click="copyToClipboard">
-        <Icon name="mdi:content-copy" class="size-4" />
-      </button>
+      <UButton
+        icon="i-lucide:clipboard-copy"
+        size="xs"
+        variant="soft"
+        @click="copyToClipboard"
+      />
     </div>
     <div
       class="flex justify-between items-center"
       style="padding-bottom: 0.3rem"
     >
       <p class="text-sm text-gray-500">{{ formattedDate }}</p>
-      <button @click="deletePaste" class="flex items-center">
-        <Icon name="mdi:delete" class="size-4" />
-      </button>
+      <UButton
+        icon="i-lucide:trash-2"
+        size="xs"
+        variant="soft"
+        @click="deletePaste"
+      />
     </div>
     <ClientOnly>
       <div id="monaco-editor-container">
@@ -165,16 +171,6 @@ pre {
   justify-content: flex-start;
   align-items: center;
   gap: 0.6em;
-}
-
-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-button .icon {
-  display: block;
 }
 </style>
 
