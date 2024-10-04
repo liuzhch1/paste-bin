@@ -1,8 +1,8 @@
 import { bundledThemesInfo, createHighlighter } from 'shiki'
 import * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
-const { default: langs } = await import('@/utils/highlight/langs.json')
-const { default: themes } = await import('@/utils/highlight/themes.json')
+import langs from './langs.json'
+import themes from './themes.json'
 export { langs, themes }
 export const langNames = Object.keys(langs)
 export const langNameOf = (id: string | null) => {
@@ -30,12 +30,12 @@ export const themeIdOf = (name: string | null) => {
 Object.values(langs).forEach((lang) => {
   monaco.languages.register({ id: lang })
 })
-const highlighter = await createHighlighter({
-  themes,
-  langs: Object.values(langs),
-})
 
-export const initMonaco = () => {
+export const initMonaco = async () => {
+  const highlighter = await createHighlighter({
+    themes,
+    langs: Object.values(langs),
+  })
   shikiToMonaco(highlighter, monaco)
   console.log('Monaco initialized')
 }

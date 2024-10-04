@@ -70,7 +70,7 @@ const editorContainer = ref<HTMLElement | null>(null)
 
 onMounted(async () => {
   await nextTick()
-  initMonaco()
+  await initMonaco()
   if (editorContainer.value) {
     const editor = monaco.editor.create(editorContainer.value, {
       value: displayedContent.value,

@@ -66,7 +66,7 @@ onMounted(async () => {
   // Likely use of <ClientOnly> delays the render of content,
   // so wait for the next DOM update cycle
   await nextTick()
-  initMonaco()
+  await initMonaco()
   const container = document.getElementById('monaco-editor-container')
   if (container) {
     editorInstance.value = monaco.editor
