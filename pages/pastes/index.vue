@@ -8,12 +8,22 @@
         class="mb-4 p-3 border rounded-md"
       />
     </div>
+    <UPagination
+      v-model="currentPage"
+      :total="total"
+      :page-count="limit"
+      @update:model-value="onPageChange"
+      class="mt-4 flex justify-center mb-4"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+const route = useRoute()
+const router = useRouter()
+
 const limit = 10
-const currentPage = ref(1)
+const currentPage = ref(parseInt(route.query.page as string) || 1)
 const totalPages = ref(1)
 
 const { data: pastesData, refresh } = await useFetch('/api/pastes', {
@@ -27,18 +37,8 @@ watchEffect(() => {
   totalPages.value = Math.ceil(total.value / limit)
 })
 
-function nextPage() {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-    refresh()
-  }
-}
-
-function prevPage() {
-  if (currentPage.value > 1) {
-    currentPage.value--
-    refresh()
-  }
+const onPageChange = (page: number) => {
+  router.push({ query: { ...route.query, page: page.toString() } })
 }
 </script>
 
