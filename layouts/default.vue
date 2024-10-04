@@ -1,18 +1,32 @@
 <template>
   <div>
     <header>
-      <div class="header-content">
-        <a href="/" class="home-link">J's Pastebin</a>
-        <nav>
-          <a
-            v-for="link in links"
-            :key="link.path"
-            :href="link.path"
-            :aria-current="isCurrentPage(link.path)"
-          >
-            {{ link.text }}
-          </a>
-        </nav>
+      <div class="header-container">
+        <div class="header-content">
+          <a href="/" class="home-link">J's Pastebin</a>
+          <nav>
+            <a
+              v-for="link in links"
+              :key="link.path"
+              :href="link.path"
+              :aria-current="isCurrentPage(link.path)"
+            >
+              {{ link.text }}
+            </a>
+          </nav>
+        </div>
+        <div class="search-box">
+          <UInput
+            v-model="searchQuery"
+            placeholder="Search pastes..."
+            icon="i-heroicons-magnifying-glass-20-solid"
+            size="xs"
+            style="font-size: 15px"
+            :trailing="false"
+            @keyup.enter="performSearch"
+            class="search-input"
+          />
+        </div>
       </div>
     </header>
     <main>
@@ -32,11 +46,18 @@ export default defineComponent({
         { path: '/pastes', text: 'Pastes' },
         { path: '/about', text: 'About' },
       ],
+      searchQuery: '',
     }
   },
   methods: {
     isCurrentPage(path: string): 'page' | undefined {
       return this.$route.path === path ? 'page' : undefined
+    },
+    performSearch() {
+      // Implement search functionality here
+      console.log('Searching for:', this.searchQuery)
+      // You might want to navigate to a search results page or update the current page
+      // this.$router.push({ path: '/search', query: { q: this.searchQuery } })
     },
   },
 })
@@ -48,6 +69,13 @@ export default defineComponent({
   font-weight: 700;
   margin-right: 1em;
   text-decoration: none;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .header-content {
@@ -84,5 +112,17 @@ main {
 
 main :first-child {
   margin-top: 0;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.search-input {
+  width: 200px;
+  font-size: 0.9em;
 }
 </style>
