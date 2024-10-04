@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Paste {
-  id        String   @id @default(uuid())
+  id        String   @id
   title     String
   content   String
   language  String

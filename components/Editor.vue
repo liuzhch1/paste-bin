@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
-import { bundledThemesInfo } from 'shiki'
 import { ref, onMounted, nextTick } from 'vue'
 import {
   initMonaco,
