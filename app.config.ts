@@ -1,6 +1,6 @@
 export default defineAppConfig({
   ui: {
-    primary: 'green',
+    primary: 'violet',
     notification: {
       progress: {
         base: 'bg-white dark:bg-gray-900',
