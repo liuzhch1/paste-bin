@@ -1,75 +1,42 @@
-# Nuxt 3 Minimal Starter
+# J's Pastebin
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+It's too annoying to send code snippet files through Airdrop or whatever, so I made this.
 
-## Setup
+Hope you find it useful.
 
-Make sure to install the dependencies:
+## Deploy
 
-```bash
-# npm
-npm install
+### With Docker
 
-# pnpm
+```sh
+docker build -t pastebin .
+docker run -d -p 3000:3000 pastebin
+```
+
+The sqlite file stored in the docker container.
+
+### Locally
+
+```sh
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+pnpm build
+export DATABASE_URL="file:/path/to/sqlite.db"
+pnpm prisma generate
+pnpm prisma migrate deploy
+node .output/server/index.mjs
 ```
 
-## Development Server
+## Tech stack
 
-Start the development server on `http://localhost:3000`:
+- [Nuxt 3](https://nuxt.com/) for the frontend and simple backend. [Nuxt UI](https://ui.nuxt.com/) and [Color-Mode](https://color-mode.nuxtjs.org/) plugins are used
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) for the code editor
+- [Shiki](https://shiki.matsu.io/) for the syntax highlighting
+- [Fuse.js](https://fusejs.io/) for the search functionality
+- [Prisma](https://prisma.io/) for the database ORM with SQLite
 
-```bash
-# npm
-npm run dev
+## Development
 
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+```sh
+pnpm install
+pnpm dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
