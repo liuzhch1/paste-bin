@@ -55,11 +55,24 @@ const exportPastes = async () => {
     isExporting.value = true
     const allPastes = await fetchAllPastes()
 
+    const now = new Date()
+    const formattedDate = now
+      .toLocaleString('en-CA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+      .replace(/[/:]/g, '-')
+      .replace(', ', '-')
+
     download(
       new Blob([JSON.stringify(allPastes, null, 2)], {
         type: 'application/json',
       }),
-      'pastes.json',
+      `pastes-${formattedDate}.json`,
       'application/json',
     )
   } catch (error) {

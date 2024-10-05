@@ -1,20 +1,24 @@
 <template>
   <div>
     <h1>All Pastes</h1>
-    <div v-for="paste in pastes" :key="paste.id">
-      <Paste
-        :paste="paste"
-        :max-lines="10"
-        class="mb-4 p-2 border border-gray-100 dark:border-gray-800 rounded-md"
+    <div v-if="pastes.length === 0">No pastes available.</div>
+    <div v-else>
+      <div v-for="paste in pastes" :key="paste.id">
+        <Paste
+          :paste="paste"
+          :max-lines="10"
+          class="mb-4 p-2 border border-gray-100 dark:border-gray-800 rounded-md"
+        />
+      </div>
+      <UPagination
+        v-if="total > 0"
+        v-model="currentPage"
+        :total="total"
+        :page-count="limit"
+        @update:model-value="onPageChange"
+        class="mt-4 flex justify-center mb-4"
       />
     </div>
-    <UPagination
-      v-model="currentPage"
-      :total="total"
-      :page-count="limit"
-      @update:model-value="onPageChange"
-      class="mt-4 flex justify-center mb-4"
-    />
   </div>
 </template>
 
