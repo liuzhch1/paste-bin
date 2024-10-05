@@ -20,6 +20,7 @@
         icon="i-lucide:trash-2"
         size="xs"
         variant="ghost"
+        color="red"
         @click="deletePaste"
       />
     </div>
