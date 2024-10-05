@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   if (!paste) {
     throw createError({
-      statusCode: 404,
+      statusCode: 410,
       message: 'Paste not found',
     })
   }
