@@ -144,9 +144,12 @@ const copyToClipboard = () => {
 }
 
 const deletePaste = async () => {
-  await $fetch('/api/pastes/' + props.paste.id, {
-    method: 'DELETE',
-  })
+  await fetch(
+    'https://pastebin.liuzhch1.workers.dev/api/pastes/' + props.paste.id,
+    {
+      method: 'DELETE',
+    },
+  )
   navigateTo('/pastes')
   useToast().add({
     title: `Paste "${props.paste.title.slice(0, 26)}${

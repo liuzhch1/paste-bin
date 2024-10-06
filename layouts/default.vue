@@ -80,8 +80,11 @@ const groups = computed(() => [
         return []
       }
 
-      const pastes = await $fetch('/api/search', { params: { q } })
-      return pastes.map((paste) => ({
+      const response = await fetch(
+        `https://pastebin.liuzhch1.workers.dev/api/search?q=${q}`,
+      )
+      const pastes = await response.json()
+      return pastes.map((paste: any) => ({
         id: paste.item.id,
         label: paste.item.title || 'Untitled',
         suffix: paste.item.content.slice(0, 100),
