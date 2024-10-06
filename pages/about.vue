@@ -41,8 +41,8 @@ const fetchAllPastes = async (): Promise<Paste[]> => {
       }`,
     )
 
-    if (response.ok) {
-      const data = await response.json()
+    const data = await response.json()
+    if (response.ok && data.pastes.length > 0) {
       allPastes = [...allPastes, ...data.pastes]
       page++
     } else {
