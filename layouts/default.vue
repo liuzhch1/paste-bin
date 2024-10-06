@@ -1,5 +1,22 @@
 <template>
   <div>
+    <UAlert
+      title="Demo pastes will be deleted"
+      icon="i-lucide:file-warning"
+      color="red"
+      variant="solid"
+      class="fixed top-0 right-0 m-4"
+      style="max-width: 300px"
+    >
+      <template #title="{ title }">
+        <span v-html="title" />
+      </template>
+      <template #description>
+        This is a demo version of the
+        <a href="https://github.com/liuzhch1/paste-bin">pastebin</a>.<br />Don't
+        put important content here.
+      </template>
+    </UAlert>
     <header>
       <div class="header-container">
         <div class="header-content">
