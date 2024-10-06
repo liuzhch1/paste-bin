@@ -1,8 +1,22 @@
 # J's Pastebin
 
+
 It's too annoying to send code snippet files through Airdrop or whatever, so I made this.
 
 Hope you find it useful.
+
+## Features
+
+- Dark / Light mode
+- Code highlight with themes
+- Really short paste link, starting with one letter: `/pastes/a`
+- VSCode like editor(Monaco)
+- Search all pastes
+- Nice looking UI
+- Export data supported
+
+## Screenshot
+![screenshot](https://github.com/user-attachments/assets/1a1d8199-f65e-4e60-96df-ab3a0886f45a)
 
 ## Deploy
 
