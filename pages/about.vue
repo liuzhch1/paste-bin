@@ -35,12 +35,15 @@ const fetchAllPastes = async (): Promise<Paste[]> => {
   let hasMore = true
 
   while (hasMore) {
-    const response = await $fetch('/api/pastes', {
-      params: { offset: page * pageSize },
-    })
+    const response = await fetch(
+      `https://pastebin.liuzhch1.workers.dev/api/pastes?offset=${
+        page * pageSize
+      }`,
+    )
 
-    if (response.pastes.length > 0) {
-      allPastes = [...allPastes, ...response.pastes]
+    if (response.ok) {
+      const data = await response.json()
+      allPastes = [...allPastes, ...data.pastes]
       page++
     } else {
       hasMore = false

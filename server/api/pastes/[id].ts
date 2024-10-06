@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaD1 } from '@prisma/adapter-d1'
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id
@@ -11,6 +11,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const prisma = new PrismaClient({
+    adapter: new PrismaD1(event.context.cloudflare.env.DB),
+  })
   const paste = await prisma.paste.findUnique({
     where: { id },
   })
@@ -21,6 +24,8 @@ export default defineEventHandler(async (event) => {
       message: 'Paste not found',
     })
   }
+
+  setResponseHeader(event, 'Access-Control-Allow-Origin', '*')
 
   return paste
 })
