@@ -32,18 +32,27 @@
             </a>
           </nav>
         </div>
-        <UTooltip
-          text="Search pastes"
-          :shortcuts="[metaSymbol, 'K']"
-          :popper="{ strategy: 'absolute' }"
-        >
+        <div>
+          <UTooltip
+            text="Search pastes"
+            :shortcuts="[metaSymbol, 'K']"
+            :popper="{ strategy: 'absolute' }"
+          >
+            <UButton
+              icon="i-lucide:search"
+              size="sm"
+              variant="ghost"
+              @click="isOpen = true"
+            />
+          </UTooltip>
           <UButton
-            icon="i-lucide:search"
+            icon="i-lucide:github"
+            to="https://github.com/liuzhch1/paste-bin"
+            target="_blank"
             size="sm"
             variant="ghost"
-            @click="isOpen = true"
           />
-        </UTooltip>
+        </div>
       </div>
     </header>
     <main>
