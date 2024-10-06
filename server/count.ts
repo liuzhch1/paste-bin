@@ -16,7 +16,7 @@ export const initCount = (env: Env) => {
       client.paste.deleteMany({
         where: {
           id: {
-            notIn: ['b', 'c', 'e'],
+            notIn: ['b', 'c', 'p'],
           },
         },
       })
