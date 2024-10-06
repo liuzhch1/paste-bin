@@ -1,7 +1,7 @@
 <template>
   <div>
     <UAlert
-      title="Demo pastes will be deleted"
+      title="Pastes will be deleted"
       icon="i-lucide:file-warning"
       color="red"
       variant="solid"
