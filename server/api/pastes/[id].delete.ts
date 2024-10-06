@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client'
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id
+  if (id && ['b', 'c', 'p'].includes(id)) {
+    return
+  }
 
   if (!id) {
     throw createError({

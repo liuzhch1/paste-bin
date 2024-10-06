@@ -144,6 +144,16 @@ const copyToClipboard = () => {
 }
 
 const deletePaste = async () => {
+  if (['b', 'c', 'p'].includes(props.paste.id)) {
+    useToast().add({
+      title: 'Demo pastes are preserved for demo purpose',
+      timeout: 3000,
+      closeButton: {
+        icon: '',
+      },
+    })
+    return
+  }
   await fetch(
     'https://pastebin.liuzhch1.workers.dev/api/pastes/' + props.paste.id,
     {
