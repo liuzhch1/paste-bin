@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>All Pastes</h1>
-    <div v-if="pastes.length === 0">No pastes available.</div>
+    <div v-if="pastes === null">Loading...</div>
+    <div v-else-if="pastes.length === 0">No pastes available.</div>
     <div v-else>
       <div v-for="paste in pastes" :key="paste.id">
         <Paste
@@ -34,7 +35,7 @@ const { data: pastesData, refresh } = await useFetch('/api/pastes', {
   query: { offset: computed(() => (currentPage.value - 1) * limit) },
 })
 
-const pastes = computed(() => pastesData.value?.pastes || [])
+const pastes = computed(() => pastesData.value?.pastes || null)
 const total = computed(() => pastesData.value?.total || 0)
 
 watchEffect(() => {
