@@ -31,12 +31,22 @@ const limit = 10
 const currentPage = ref(parseInt(route.query.page as string) || 1)
 const totalPages = ref(1)
 
-const { data: pastesData, refresh } = await useFetch('/api/pastes', {
-  query: { offset: computed(() => (currentPage.value - 1) * limit) },
-})
+const pastes = ref<any[] | null>(null)
+const total = ref(0)
 
-const pastes = computed(() => pastesData.value?.pastes || null)
-const total = computed(() => pastesData.value?.total || 0)
+const fetchPastes = async () => {
+  const offset = (currentPage.value - 1) * limit
+  const response = await fetch(
+    `https://pastebin.liuzhch1.workers.dev/api/pastes?offset=${offset}`,
+  )
+  const data = await response.json()
+  pastes.value = data.pastes
+  total.value = data.total
+}
+
+onMounted(fetchPastes)
+
+watch(currentPage, fetchPastes)
 
 watchEffect(() => {
   totalPages.value = Math.ceil(total.value / limit)

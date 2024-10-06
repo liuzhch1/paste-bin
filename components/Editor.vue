@@ -136,18 +136,32 @@ const createPaste = async () => {
   isCreating.value = true
 
   try {
+    if (!editorInstance.value) return
     const paste = monaco.editor.getModel(editorInstance.value.uri)?.getValue()
-    const response = await $fetch('/api/pastes', {
-      method: 'POST',
-      body: {
-        title: pasteTitle.value,
-        content: paste,
-        language: currentLanguageId.value,
-        theme: currentThemeId.value,
+    const response = await fetch(
+      'https://pastebin.liuzhch1.workers.dev/api/pastes',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: pasteTitle.value,
+          content: paste,
+          language: currentLanguageId.value,
+          theme: currentThemeId.value,
+        }),
       },
-    })
+    )
+    if (!response.ok) {
+      console.error('Failed to create paste')
+      return
+    }
+    const data = await response.json()
     draftPaste.clear()
-    navigateTo(`/pastes/${response.id}`)
+    draftPaste.clear()
+    navigateTo(`/pastes/${data.id}`)
   } finally {
     isCreating.value = false
   }

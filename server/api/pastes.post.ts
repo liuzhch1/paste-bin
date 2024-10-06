@@ -1,19 +1,24 @@
+import { count, initCount } from '../count'
 import { PrismaClient } from '@prisma/client'
-import { count } from '../count'
-const prisma = new PrismaClient()
+import { PrismaD1 } from '@prisma/adapter-d1'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  console.log(body)
   const { title, content, language, theme } = body
+  const prisma = new PrismaClient({
+    adapter: new PrismaD1(event.context.cloudflare.env.DB),
+  })
   const paste = await prisma.paste.create({
     data: {
-      id: await nextId(),
+      id: await nextId(event.context.cloudflare.env),
       title,
       content,
       language,
       theme,
     },
   })
+  setResponseHeader(event, 'Access-Control-Allow-Origin', '*')
   return paste
 })
 
@@ -41,7 +46,11 @@ const generateId = () => {
   return id
 }
 
-const nextId = async () => {
+const nextId = async (env: Env) => {
+  initCount(env)
+  const prisma = new PrismaClient({
+    adapter: new PrismaD1(env.DB),
+  })
   while (true) {
     const id = generateId()
     const paste = await prisma.paste.findUnique({ where: { id } })

@@ -17,7 +17,22 @@
 
 <script lang="ts" setup>
 const { slug } = useRoute().params
-const { data: paste, error } = await useFetch(`/api/pastes/${slug}`, {
-  key: slug[0],
-})
+const paste = ref<any>(null)
+const error = ref<any>(null)
+
+const fetchPaste = async () => {
+  const response = await fetch(
+    `https://pastebin.liuzhch1.workers.dev/api/pastes/${slug}`,
+  )
+  if (response.ok) {
+    paste.value = await response.json()
+  } else {
+    error.value = {
+      statusCode: response.status,
+      message: response.statusText,
+    }
+  }
+}
+
+onMounted(fetchPaste)
 </script>

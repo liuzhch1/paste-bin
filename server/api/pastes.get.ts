@@ -1,7 +1,10 @@
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaD1 } from '@prisma/adapter-d1'
 
 export default defineEventHandler(async (event) => {
+  const prisma = new PrismaClient({
+    adapter: new PrismaD1(event.context.cloudflare.env.DB),
+  })
   const query = getQuery(event)
   const offset = parseInt(query.offset as string) || 0
   const limit = 10
@@ -14,6 +17,8 @@ export default defineEventHandler(async (event) => {
     }),
     prisma.paste.count(),
   ])
+
+  setResponseHeader(event, 'Access-Control-Allow-Origin', '*')
 
   return {
     pastes,
