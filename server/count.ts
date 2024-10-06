@@ -7,13 +7,19 @@ let initialized = false
 export const initCount = (env: Env) => {
   if (initialized) return
   initialized = true
-  setInterval(
-    () =>
-      new PrismaClient({
-        adapter: new PrismaD1(env.DB),
-      }).paste
-        .count()
-        .then((c) => (count = c)),
-    5000,
-  )
+  setInterval(() => {
+    const client = new PrismaClient({
+      adapter: new PrismaD1(env.DB),
+    })
+    client.paste.count().then((c) => (count = c))
+    if (count > 1000) {
+      client.paste.deleteMany({
+        where: {
+          id: {
+            notIn: ['b', 'c', 'e'],
+          },
+        },
+      })
+    }
+  }, 5000)
 }

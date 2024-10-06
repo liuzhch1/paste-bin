@@ -1,3 +1,16 @@
+> [!WARNING]
+> [This branch](https://github.com/liuzhch1/paste-bin/tree/cloudflare-demo) is deployed on Cloudflare Workers and Pages, in a hurry...
+>
+> so the code quality, the part of integrating with Cloudflare D1 and Pages, is quite poor.
+
+During the hurry demo deployment, I referred to
+
+https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm
+
+https://nitro.unjs.io/deploy/providers/cloudflare#direct-access-to-cloudflare-bindings
+
+https://www.reddit.com/r/Nuxt/comments/109au1x/comment/l29pxir
+
 # J's Pastebin
 
 
