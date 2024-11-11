@@ -102,10 +102,11 @@ onMounted(async () => {
     })
 
     // Adjust editor height based on content
-    const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight)
-    const lineCount = editor.getModel()?.getLineCount() || 0
-    const height = lineHeight * lineCount
-    editorContainer.value.style.height = `${height}px`
+    editor.onDidContentSizeChange((e) => {
+      if (editorContainer.value) {
+        editorContainer.value.style.height = `${e.contentHeight}px`
+      }
+    })
 
     // Set theme if current url isn't /pastes
     if (window.location.pathname !== '/pastes') {
