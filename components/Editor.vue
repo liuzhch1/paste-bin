@@ -31,8 +31,8 @@
         color="white"
         @click="createPaste"
         class="create-button"
-        :disabled="!editorContent"
-        >Create</UButton
+        :disabled="!editorContent || isCreating"
+        >{{ isCreating ? 'Creating...' : 'Create' }}</UButton
       >
     </div>
   </ClientOnly>
@@ -62,6 +62,8 @@ console.log(currentTheme)
 console.log(currentThemeId.value, currentTheme.value)
 const editorContent = ref(draftPaste.content || '')
 const pasteTitle = ref(draftPaste.title || '')
+
+const isCreating = ref(false)
 
 onMounted(async () => {
   // Likely use of <ClientOnly> delays the render of content,
@@ -130,19 +132,25 @@ const updateEditorLanguage = (selectedLang: string) => {
 }
 
 const createPaste = async () => {
-  if (!editorInstance.value) return
-  const paste = monaco.editor.getModel(editorInstance.value.uri)?.getValue()
-  const response = await $fetch('/api/pastes', {
-    method: 'POST',
-    body: {
-      title: pasteTitle.value,
-      content: paste,
-      language: currentLanguageId.value,
-      theme: currentThemeId.value,
-    },
-  })
-  draftPaste.clear()
-  navigateTo(`/pastes/${response.id}`)
+  if (!editorInstance.value || isCreating.value) return
+  isCreating.value = true
+
+  try {
+    const paste = monaco.editor.getModel(editorInstance.value.uri)?.getValue()
+    const response = await $fetch('/api/pastes', {
+      method: 'POST',
+      body: {
+        title: pasteTitle.value,
+        content: paste,
+        language: currentLanguageId.value,
+        theme: currentThemeId.value,
+      },
+    })
+    draftPaste.clear()
+    navigateTo(`/pastes/${response.id}`)
+  } finally {
+    isCreating.value = false
+  }
 }
 
 // Update the updateEditorTheme function to consider the color mode
