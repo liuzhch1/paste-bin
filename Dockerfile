@@ -1,7 +1,6 @@
 FROM node:22
 WORKDIR /paste-bin
 COPY . .
-RUN git clean -fdX .
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build

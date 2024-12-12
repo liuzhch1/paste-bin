@@ -3,7 +3,7 @@
 
 It's too annoying to send code snippet files through Airdrop or whatever, so I made this.
 
-Try it out: https://pastebin-6zr.pages.dev
+Try it out: https://paste-bin.demos.liuzhch1.com/
 
 ## Features
 
